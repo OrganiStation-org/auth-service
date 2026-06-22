@@ -2,7 +2,7 @@ name: Microservice CI Pipeline
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop, main ]
   pull_request:
     branches: [ main ]
 
@@ -11,8 +11,12 @@ jobs:
     permissions:
       contents: read
       packages: write
-    uses: OrganiStation-org/shared-workflows/.github/workflows/reusable-ci.yaml@develop
+      id-token: write          # UNLOCKS: Azure OIDC Authentication
+      security-events: write   # UNLOCKS: Trivy Security Scan Reports
+      pull-requests: write     # UNLOCKS: SonarCloud PR Feedback
+    uses: OrganiStation-org/shared-workflows/.github/workflows/reusable-ci.yaml@main
     with:
       image_name: auth-service
       sonar_project_key: organistation-auth
+      sonar_org: "OrganiStation-org" # Fixed: Added missing required input
     secrets: inherit
